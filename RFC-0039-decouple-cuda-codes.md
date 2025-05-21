@@ -33,14 +33,16 @@ nor about implementing the described feature until some time in the future.
 * @nickname 
 
 
-## **Summary** （1人）
+## **Summary** （1人）王家喜
 A short paragraph or bullet list that quickly explains what you're trying to do.
+方案的总览
 
-## **Highlights** （1人）
+
+## **Highlights** （1人）袁孟雯
 阐述CUDA代码分离工作的亮点
 
 
-## **Motivation**（1人）
+## **Motivation**（1人）祝贺
 What motivates this proposal and why is it important?
 How should users and developers think about this feature, how would it impact the way PyTorch is used?
 Explain impact and value of this feature
@@ -55,13 +57,13 @@ Consider:
 *   linking to project briefs or wireframes that are relevant.
 
 
-*   代码分离（1人）  
+*   代码分离（1人）  张靖
 文件间/内
-*   目录重构（1人）
-*   编译工程（1人）
+*   目录重构（1人）  张靖
+*   编译工程（1人）  黄雷
 
 
-## 优缺点（1人）
+## 优缺点（1人）   付泽伟
 ## **Metrics **
 What are the main metrics to measure the value of this feature? 
 
@@ -76,11 +78,12 @@ Please consider:
 * integration of this feature with other existing and planned features
 
 
-## **Alternatives**
+## **Alternatives**   洪泓
 What other designs have been considered? What is the impact of not doing this?
+in-tree 
+out-of-tree (cuda key, pu1 key)
 
-
-## **Prior Art**（1人）
+## **Prior Art**（1人） 崔巍
 Discuss prior art (both good and bad) in relation to this proposal:
 * Does this feature exist in other libraries? What experience has their community had?
 * What lessons can be learned from other implementations of this feature?
@@ -117,7 +120,7 @@ Choose one of the following:
 Some people were in favor of it, but some people didn’t want it for project X.
 
 
-### Next Steps（1人）
+### Next Steps（1人）侯丽亚
 Will implement it. 
 
 
