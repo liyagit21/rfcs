@@ -26,21 +26,21 @@ nor about implementing the described feature until some time in the future.
 
 
 
-# [Title]
+# Decouple CUDA Codes
 
 **Authors:**
 * @nickname
 * @nickname 
 
 
-## **Summary**
+## **Summary** （1人）
 A short paragraph or bullet list that quickly explains what you're trying to do.
 
-## **Highlights**
+## **Highlights** （1人）
 阐述CUDA代码分离工作的亮点
 
 
-## **Motivation**
+## **Motivation**（1人）
 What motivates this proposal and why is it important?
 How should users and developers think about this feature, how would it impact the way PyTorch is used?
 Explain impact and value of this feature
@@ -55,6 +55,13 @@ Consider:
 *   linking to project briefs or wireframes that are relevant.
 
 
+*   代码分离（1人）  
+文件间/内
+*   目录重构（1人）
+*   编译工程（1人）
+
+
+## 优缺点（1人）
 ## **Metrics **
 What are the main metrics to measure the value of this feature? 
 
@@ -73,7 +80,7 @@ Please consider:
 What other designs have been considered? What is the impact of not doing this?
 
 
-## **Prior Art**
+## **Prior Art**（1人）
 Discuss prior art (both good and bad) in relation to this proposal:
 * Does this feature exist in other libraries? What experience has their community had?
 * What lessons can be learned from other implementations of this feature?
@@ -110,7 +117,7 @@ Choose one of the following:
 Some people were in favor of it, but some people didn’t want it for project X.
 
 
-### Next Steps
+### Next Steps（1人）
 Will implement it. 
 
 
