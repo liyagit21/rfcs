@@ -40,7 +40,10 @@ A short paragraph or bullet list that quickly explains what you're trying to do.
 
 ## **Highlights** （1人）袁孟雯
 阐述CUDA代码分离工作的亮点
-
+- 将 CUDA 相关实现从主工程中抽离，降低 PyTorch 核心框架对 CUDA 的直接耦合，提升整体工程可维护性。
+- 更清晰、统一的目录层级结构，提升可读性与可维护性，使开发者能快速定位并理解后端逻辑，降低新开发者参与的学习门槛，为长期维护和社区贡献者提供更友好的结构。
+- 重写构建系统以支持 CUDA 后端独立编译，降低编译复杂度，实现更快的增量构建和更少的构建依赖。
+- 统一设备后端架构风格，为后续支持更多第三方后端提供模板，降低集成门槛和时间成本，提升 PyTorch 后端接入的一致性与可插拔性。
 
 ## **Motivation**（1人）祝贺
 What motivates this proposal and why is it important?
