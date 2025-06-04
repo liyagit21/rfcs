@@ -317,7 +317,7 @@ cuda解耦出来后，原始目录参考第一节，除了nvidia（cuda），我
    将CUDA编译系统从主框架解耦为独立工程，构建两大核心组件：
    - `torch_cuda`  
     ▸ 设备抽象层与运行框架  
-    ▸ 设备资源管理
+    ▸ 设备资源管理  
     ▸ 算子实现（原生/native、加速库/cuBLAS/cuDNN/linalg、自定义）
     
    - `torch_python_cuda`  
