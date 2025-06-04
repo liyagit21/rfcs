@@ -310,18 +310,32 @@ cuda解耦出来后，原始目录参考第一节，除了nvidia（cuda），我
 <font style="color:rgb(44, 44, 54);"></font>
 
 
+<h3 id="7e0821a0"><font style="color:rgba(0, 0, 0, 0.9);">四、编译工程优化</font></h3>
+本方案针对PyTorch原生CUDA设备编译流程进行了以下关键性改进：
+   
+- **编译逻辑解耦**  
+   将CUDA编译系统从主框架解耦为独立工程，构建两大核心组件：
+   - `torch_cuda`  
+    ▸ 设备抽象层与运行框架  
+    ▸ 设备资源管理
+    ▸ 算子实现（原生/native、加速库/cuBLAS/cuDNN/linalg、自定义）
+    
+   - `torch_python_cuda`  
+    ▸ 基于pybind11的Python-C++交互接口  
+    ▸ 针对新设备的跨语言类型系统桥接层，实现设备后端与Python层的双向解耦
+   
+- **CMake工程化封装**  
+   基于`tools.setup_helpers.cmake`封装`wrapped_cmake`构建工具：
+    - 标准化设备后端编译工具链
+    - 实现：编译参数统一配置、环境自动初始化、编译器特性适配
+   
+- **模块化隔离架构**  
+   - 分离出独立设备模块`_CUDAC.cpython-XX.so`，具备独立初始化链路
+   - 统一新设备专用扩展构建器`torch.utils.cpp_extension.NewDeviceCppExtension`，实现编译环境与核心框架的物理隔离
+   
+                          ![编译架构对比](RFC-0039-assets/decouple_cuda_compiling_implementation.png)        
+  _图4.1: 编译架构对比（左：原始架构，右：新架构）_
 
-
-
-
-
-
-
-
-
-
-
-*   编译工程（1人）  黄雷
 
 
 ## 优缺点（1人）   付泽伟
