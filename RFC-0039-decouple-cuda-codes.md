@@ -84,9 +84,11 @@ Consider:
 
 <font style="color:rgba(0, 0, 0, 0.9);">我们通过实践总结了以下四种解耦方式，这四种方式并不是独立的，而是相互照应、相互补充的。</font>
 <div style="text-align: center;">
-<img src="RFC-0039-assets/decoupling.png" alt="decoupling" style="width: 80%;">
-<p>图1 解耦方式</p>
+    <img src="RFC-0039-assets/decoupling.png" alt="decoupling" style="width: 80%;">
+    <p>图1 解耦方式</p>
 </div>
+
+
 <h4 id="83253c23"><font style="color:rgba(0, 0, 0, 0.9);">（一）文件间解耦</font></h4>
 
 <font style="color:rgba(0, 0, 0, 0.9);">解耦</font><font style="color:rgba(0, 0, 0, 0.9);">标准如下：</font>
@@ -260,9 +262,10 @@ list(APPEND ATen_CUDA_CPP_SRCS
 
 
 <div style="text-align: center;">
-<img src="RFC-0039-assets/catalogue.png" alt="catalogue" style="width: 80%;">
-<p>图2 目录重构</p>
+    <img src="RFC-0039-assets/catalogue.png" alt="catalogue" style="width: 80%;">
+    <p>图2 目录重构</p>
 </div>
+
 
 cuda解耦出来后，原始目录参考第一节，除了nvidia（cuda），我们调研了[AMD(gpu)](https://github.com/ROCm/pytorch)、[Google(TPU)](https://github.com/pytorch/xla/tree/master)、[Intel(XPU)](https://github.com/intel/intel-extension-for-pytorch)、[Ascend(NPU)](https://gitee.com/ascend/pytorch)、[Cambricon(MLU)](https://github.com/Cambricon/torch_mlu/tree/r2.4_develop)等多个超算卡厂商适配pytorch的方式，总结了各厂商适配PyTorch的代码目录结构、相似和特异性改动点，着重考虑到了以下因素：
 
