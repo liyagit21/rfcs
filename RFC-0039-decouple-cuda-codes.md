@@ -83,8 +83,11 @@ Consider:
 <h3 id="d65ce516"><font style="color:rgba(0, 0, 0, 0.9);">二、解耦方式</font></h3>
 
 <font style="color:rgba(0, 0, 0, 0.9);">我们通过实践总结了以下四种解耦方式，这四种方式并不是独立的，而是相互照应、相互补充的。</font>
+<div style="text-align: center;">
+    <img src="RFC-0039-assets/decoupling.png" alt="decoupling" style="width: 80%;">
+    <p>图1 解耦方式</p>
+</div>
 
-![](https://cdn.nlark.com/yuque/0/2025/png/32361127/1748503065598-84d654cb-cecf-4e73-ac26-1e5e3bb30ac5.png)
 
 <h4 id="83253c23"><font style="color:rgba(0, 0, 0, 0.9);">（一）文件间解耦</font></h4>
 
@@ -172,21 +175,6 @@ register_cuda_runner("cuda", &create_aoti_runner_cuda)
 <font style="color:rgba(0, 0, 0, 0.9);">需要补充的文件类型包括：</font>
 
 <h5 id="FuDse">1. `<font style="color:rgba(0, 0, 0, 0.9);background-color:rgba(0, 0, 0, 0.03);">*.h</font>`<font style="color:rgba(0, 0, 0, 0.9);">、</font>`<font style="color:rgba(0, 0, 0, 0.9);background-color:rgba(0, 0, 0, 0.03);">*.hpp</font>`<font style="color:rgba(0, 0, 0, 0.9);"> 头文件。</font></h5>
-<style>
-/* 定义用于文件路径的样式 */
-.path-highlight {
-    color: rgba(0, 0, 0, 0.9);
-    background-color: rgba(0, 0, 0, 0.03);
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-family: monospace;
-}
-
-/* 定义用于标题的样式 */
-.header-highlight {
-    color: rgba(0, 0, 0, 0.9);
-}
-</style>
 
 示例：
 
@@ -272,9 +260,14 @@ list(APPEND ATen_CUDA_CPP_SRCS
 *   目录重构（1人）  张靖
 <h3 id="7e0821a0"><font style="color:rgba(0, 0, 0, 0.9);">三、目录重构</font></h3>
 
-![](https://cdn.nlark.com/yuque/0/2025/png/32361127/1748588334657-62159db5-d4d0-4d15-adc6-2a833d54f966.png)
 
-cuda解耦出来后，原始目录参考第一节，除了nvidia（cuda），我们调研了[AMD(gpu)](https://github.com/ROCm/pytorch)、[google(tpu)](https://github.com/pytorch/xla/tree/master)、[intel(xpu)](https://github.com/intel/intel-extension-for-pytorch)、[acend(npu)](https://gitee.com/ascend/pytorch)、[Cambricon(mlu)](https://github.com/Cambricon/torch_mlu/tree/r2.4_develop)等多个超算卡厂商适配pytorch的方式，总结了各厂商适配PyTorch的代码目录结构、相似和特异性改动点，着重考虑到了以下因素：
+<div style="text-align: center;">
+    <img src="RFC-0039-assets/catalogue.png" alt="catalogue" style="width: 80%;">
+    <p>图2 目录重构</p>
+</div>
+
+
+cuda解耦出来后，原始目录参考第一节，除了nvidia（cuda），我们调研了[AMD(gpu)](https://github.com/ROCm/pytorch)、[Google(TPU)](https://github.com/pytorch/xla/tree/master)、[Intel(XPU)](https://github.com/intel/intel-extension-for-pytorch)、[Ascend(NPU)](https://gitee.com/ascend/pytorch)、[Cambricon(MLU)](https://github.com/Cambricon/torch_mlu/tree/r2.4_develop)等多个超算卡厂商适配pytorch的方式，总结了各厂商适配PyTorch的代码目录结构、相似和特异性改动点，着重考虑到了以下因素：
 
 <h5 id="Ee0MW">1. Python/C++分层解耦</h5>
 
