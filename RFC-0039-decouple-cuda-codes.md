@@ -1,68 +1,68 @@
-
-
 <details>
 <summary>Instructions - click to expand</summary>
 
 - Fork the rfcs repo: https://github.com/pytorch/rfcs
 - Copy `RFC-0000-template.md` to `RFC-00xx-my-feature.md`, or write your own open-ended proposal. Put care into the details.
 - Submit a pull request titled `RFC-00xx-my-feature`. 
-    - Assign the `draft` label while composing the RFC. You may find it easier to use a WYSIWYG editor (like Google Docs) when working with a few close collaborators; feel free to use whatever platform you like. Ideally this document is publicly visible and is linked to from the PR.
-    - When opening the RFC for general discussion, copy your document into the `RFC-00xx-my-feature.md` file on the PR and assign the `commenting` label.
+  - Assign the `draft` label while composing the RFC. You may find it easier to use a WYSIWYG editor (like Google Docs) when working with a few close collaborators; feel free to use whatever platform you like. Ideally this document is publicly visible and is linked to from the PR.
+  - When opening the RFC for general discussion, copy your document into the `RFC-00xx-my-feature.md` file on the PR and assign the `commenting` label.
 - Build consensus for your proposal, integrate feedback and revise it as needed, and summarize the outcome of the discussion via a [resolution template](https://github.com/pytorch/rfcs/blob/master/RFC-0000-template.md#resolution).
-    - If the RFC is idle here (no activity for 2 weeks), assign the label `stalled` to the PR.
+  - If the RFC is idle here (no activity for 2 weeks), assign the label `stalled` to the PR.
 - Once the discussion has settled, assign a new label based on the level of support:
-    - `accepted` if a decision has been made in the RFC
-    - `draft` if the author needs to rework the RFC’s proposal
-    - `shelved` if there are no plans to move ahead with the current RFC’s proposal. We want neither to think about evaluating the proposal
-nor about implementing the described feature until some time in the future.
+  - `accepted` if a decision has been made in the RFC
+  - `draft` if the author needs to rework the RFC’s proposal
+  - `shelved` if there are no plans to move ahead with the current RFC’s proposal. We want neither to think about evaluating the proposal
+    nor about implementing the described feature until some time in the future.
 - A state of `accepted` means that the core team has agreed in principle to the proposal, and it is ready for implementation. 
 - The author (or any interested developer) should next open a tracking issue on Github corresponding to the RFC.
-    - This tracking issue should contain the implementation next steps. Link to this tracking issue on the RFC (in the Resolution > Next Steps section)
+  - This tracking issue should contain the implementation next steps. Link to this tracking issue on the RFC (in the Resolution > Next Steps section)
 - Once all relevant PRs are merged, the RFC’s status label can be finally updated to `closed`.
 
 </details>
 
-
-
-
-
 # Decouple CUDA Codes
 
 **Authors:**
+
 * @nickname
 * @nickname 
 
-
 ## **Summary** （1人）王家喜
+
 A short paragraph or bullet list that quickly explains what you're trying to do. <br />
 目前，第三方硬件后端接入PyTorch的方式主要包括复用CUDA key和代码逻辑、利用树内预定义的key（如Intel XPU）和部分代码以及利用树内预留的PrivateUse1 key等三种。一方面，由于CUDA软件栈的生态地位，部分硬件厂商（如AMD HIP和MetaX MACA）选择直接复用CUDA key，通过兼容CUDA API的方式最小化PyTorch使用者的代码迁移成本。这种方法的优点是可以直接复用CUDA代码的逻辑，厂商适配工作量较小，但为了发挥硬件的优势，需要对CUDA kernel等代码进行侵入式修改。另一方面，随着PrivateUse1接入机制的不断完善，越来越多的厂商（如Ascend NPU和Cambricon MLU）选择此种接入方式，这种方法的优点是对PyTorch侵入修改较少，但厂商适配工作量较大（如无法直接复用CUDA代码逻辑）。<br />
 本RFC提案旨在充分融合两者的优势，弥补相互之间的不足，先将CUDA代码解耦出来，形成相对独立的代码目录结构和编译单元；而后，逐步实现CUDA硬件后端、类CUDA硬件后端和其他架构硬件后端以统一的PrivateUse1机制接入PyTorch。
 
-
 ## **Highlights** （1人）袁孟雯
+
 阐述CUDA代码分离工作的亮点
+
 - 将 CUDA 相关实现从主工程中抽离，降低 PyTorch 核心框架对 CUDA 的直接耦合，提升整体工程可维护性。
 - 更清晰、统一的目录层级结构，提升可读性与可维护性，使开发者能快速定位并理解后端逻辑，降低新开发者参与的学习门槛，为长期维护和社区贡献者提供更友好的结构。
 - 重写构建系统以支持 CUDA 后端独立编译，降低编译复杂度，实现更快的增量构建和更少的构建依赖。
 - 统一设备后端架构风格，为后续支持更多第三方后端提供模板，降低集成门槛和时间成本，提升 PyTorch 后端接入的一致性与可插拔性。
 
 ## **Motivation**（1人）祝贺
+
 What motivates this proposal and why is it important?
 How should users and developers think about this feature, how would it impact the way PyTorch is used?
 Explain impact and value of this feature
 
-
 ## **Proposed Implementation**
+
 This is the bulk of the RFC. Explain the design in enough detail for somebody familiar with PyTorch to understand, and for somebody familiar with the implementation to implement. 
 This should get into specifics and corner-cases, and include examples of how the feature is used, and how it will interact with other features. Any new terminology should be defined here.
 Consider:
-*   using examples and diagrams to help illustrate your ideas.
-*   including code examples, if you're proposing an interface or system contract.
-*   linking to project briefs or wireframes that are relevant.
 
+* using examples and diagrams to help illustrate your ideas.
 
-*   代码分离（1人）  张靖
-<h3 id="fc3655d2"><font style="color:rgba(0, 0, 0, 0.9);">一、需要解耦的功能模块</font></h3>
+* including code examples, if you're proposing an interface or system contract.
+
+* linking to project briefs or wireframes that are relevant.
+
+* 代码分离（1人）  张靖
+  
+  <h3 id="fc3655d2"><font style="color:rgba(0, 0, 0, 0.9);">一、需要解耦的功能模块</font></h3>
 
 <font style="color:rgba(0, 0, 0, 0.9);">涉及到需要解耦的功能模块包括：</font>
 
@@ -83,11 +83,11 @@ Consider:
 <h3 id="d65ce516"><font style="color:rgba(0, 0, 0, 0.9);">二、解耦方式</font></h3>
 
 <font style="color:rgba(0, 0, 0, 0.9);">我们通过实践总结了以下四种解耦方式，这四种方式并不是独立的，而是相互照应、相互补充的。</font>
+
 <div style="text-align: center;">
     <img src="RFC-0039-assets/decoupling.png" alt="decoupling" style="width: 80%;">
     <p>图1 解耦方式</p>
 </div>
-
 
 <h4 id="83253c23"><font style="color:rgba(0, 0, 0, 0.9);">（一）文件间解耦</font></h4>
 
@@ -96,7 +96,6 @@ Consider:
 <h5 id="H6xQ7"><font style="color:rgba(0, 0, 0, 0.9);">1. 文件夹名称包含 </font>`<font style="color:rgba(0, 0, 0, 0.9);background-color:rgba(0, 0, 0, 0.03);">cuda</font>`<font style="color:rgba(0, 0, 0, 0.9);">、</font>`<font style="color:rgba(0, 0, 0, 0.9);background-color:rgba(0, 0, 0, 0.03);">cudnn</font>`<font style="color:rgba(0, 0, 0, 0.9);">、</font>`<font style="color:rgba(0, 0, 0, 0.9);background-color:rgba(0, 0, 0, 0.03);">THC</font>`<font style="color:rgba(0, 0, 0, 0.9);"> 关键字。</font></h5>
 
 <font style="color:rgba(0, 0, 0, 0.9);">示例：</font>
-
 
 - `torch/backends/cuda`
 - `torch/backends/cudnn`
@@ -117,7 +116,6 @@ Consider:
 <h5 id="E2gdO"><font style="color:rgba(0, 0, 0, 0.9);">2. 文件名包含 </font>`<font style="color:rgba(0, 0, 0, 0.9);background-color:rgba(0, 0, 0, 0.03);">cuda</font>`<font style="color:rgba(0, 0, 0, 0.9);">、</font>`<font style="color:rgba(0, 0, 0, 0.9);background-color:rgba(0, 0, 0, 0.03);">cudnn</font>`<font style="color:rgba(0, 0, 0, 0.9);">、</font>`<font style="color:rgba(0, 0, 0, 0.9);background-color:rgba(0, 0, 0, 0.03);">THC</font>`<font style="color:rgba(0, 0, 0, 0.9);"> 关键字。</font></h5>
 
 <font style="color:rgba(0, 0, 0, 0.9);">示例：</font>
-
 
 - `torch/csrc/distributed/rpc/tensorpipe_cuda.cpp`
 - `torch/csrc/profiler/stubs/cuda.cpp`
@@ -256,16 +254,14 @@ list(APPEND ATen_CUDA_CPP_SRCS
 )
 ```
 
-
-*   目录重构（1人）  张靖
-<h3 id="7e0821a0"><font style="color:rgba(0, 0, 0, 0.9);">三、目录重构</font></h3>
-
+* 目录重构（1人）  张靖
+  
+  <h3 id="7e0821a0"><font style="color:rgba(0, 0, 0, 0.9);">三、目录重构</font></h3>
 
 <div style="text-align: center;">
     <img src="RFC-0039-assets/catalogue.png" alt="catalogue" style="width: 80%;">
     <p>图2 目录重构</p>
 </div>
-
 
 cuda解耦出来后，原始目录参考第一节，除了nvidia（cuda），我们调研了[AMD(gpu)](https://github.com/ROCm/pytorch)、[Google(TPU)](https://github.com/pytorch/xla/tree/master)、[Intel(XPU)](https://github.com/intel/intel-extension-for-pytorch)、[Ascend(NPU)](https://gitee.com/ascend/pytorch)、[Cambricon(MLU)](https://github.com/Cambricon/torch_mlu/tree/r2.4_develop)等多个超算卡厂商适配pytorch的方式，总结了各厂商适配PyTorch的代码目录结构、相似和特异性改动点，着重考虑到了以下因素：
 
@@ -303,93 +299,108 @@ cuda解耦出来后，原始目录参考第一节，除了nvidia（cuda），我
 
 <font style="color:rgb(44, 44, 54);"></font>
 
-
 <h3 id="7e0821a0"><font style="color:rgba(0, 0, 0, 0.9);">四、编译工程优化</font></h3>
 本方案针对PyTorch原生CUDA设备编译流程进行了以下关键性改进：
-   
+
 - **编译逻辑解耦**  
    将CUDA编译系统从主框架解耦为独立工程，构建两大核心组件：
-   - `torch_cuda`  
+  
+  - `torch_cuda`  
     ▸ 设备抽象层与运行框架  
     ▸ 设备资源管理  
     ▸ 算子实现（原生/native、加速库/cuBLAS/cuDNN/linalg、自定义）
-    
-   - `torch_python_cuda`  
+  
+  - `torch_python_cuda`  
     ▸ 基于pybind11的Python-C++交互接口  
     ▸ 针对新设备的跨语言类型系统桥接层，实现设备后端与Python层的双向解耦
-   
+
 - **CMake工程化封装**  
    基于`tools.setup_helpers.cmake`封装`wrapped_cmake`构建工具：
-    - 标准化设备后端编译工具链
-    - 实现：编译参数统一配置、环境自动初始化、编译器特性适配
-   
+  
+  - 标准化设备后端编译工具链
+  - 实现：编译参数统一配置、环境自动初始化、编译器特性适配
+
 - **模块化隔离架构**  
-   - 分离出独立设备模块`_CUDAC.cpython-XX.so`，具备独立初始化链路
-   - 统一新设备专用扩展构建器`torch.utils.cpp_extension.NewDeviceCppExtension`，实现编译环境与核心框架的物理隔离
-   
+  
+  - 分离出独立设备模块`_CUDAC.cpython-XX.so`，具备独立初始化链路
+  - 统一新设备专用扩展构建器`torch.utils.cpp_extension.NewDeviceCppExtension`，实现编译环境与核心框架的物理隔离
+
                           ![编译架构对比](RFC-0039-assets/decouple_cuda_compiling_implementation.png)        
   _图4.1: 编译架构对比（左：原始架构，右：新架构）_
 
-
-
 ## 优缺点（1人）   付泽伟
+
 ## **Metrics **
+
 理想情况下pytroch应该作为一种与硬件无关的深度学习框架，就像操作系统一样对于使用者屏蔽底层硬件实现细节，并提供经过抽象的和便于使用的接口，这些接口不应该涉及任何和底层硬件实现有关的信息。Pytorch自定义一套与底层硬件无关的硬件抽象层，统一差异化的硬件接口（集合通信），使上层系统组件无需关注具体硬件实现，同时方便各个硬件厂商对接自己的硬件。然而现实情况和上面有差异，主要是以下几点。
-1.	直接指定底层硬件
-实际在使用pytorch的时候，经常涉及到在代码中直接指定底层硬件的情况，例如torch.tensor([3,4]).cuda()，假如在切换到第三方硬件后，pytorch的用户还需要对代码做不通程度的修改，而且由于缺乏硬件抽象，对于第三方的接入使用没有强制性的规定，导致用户代码在切换不同的底层硬件时所做的的修改不完全一样，给代码的通用性带来了挑战。
-2.	pytorch和cuda的强依赖
-pytorch源码中直接涉及到调用cuda的接口，这导致了新的cuda版本发布后，需要等pytorch官方适配，pytorch此外代码中充斥了对cuda头文件的引用，需要通过设置对应的环境变量加以屏蔽，不便于用户理解。
-3.	第三方硬件接入困难
-目前pytorch提供了privateuse1的DispatechKey，为开发者提供了一种扩展硬件的方式，然后在厂商的实际使用中还是存在问题，例如1.无法同时接入两个不同的后端，2.代码的侵入性强，需要在Pytorch框架层面修改核心组件例如（storage模块，device manange模块），这导致与官方代码的耦合度高，而且无法跟随Pytorch的版本自动升级。
-我们提出的cuda代码抽象分离方案就是在看到以上问题的基础上提出的，主要具有以下的优点：
-1.	对使用者屏蔽底层硬件实现
-我们自定义了一套对底层的硬件抽象层，规定了在接入第三方硬件时应该实现的接口和调用规则，在用户使用层面，用户不用直接使用cuda这样的关键字，我们自定义了一套通用的关键字（cuda对应pu1，nccl对应pccl），底层硬件改变后对用户是无感的，用户不用频繁修改代码，真正做到一套代码全平台运行。
-2.	解除pytorch和cuda代码的强依赖
-我们将cuda设备视为一个和第三方硬件一样的可接入的硬件，对cuda设备的接入方式和所有第三方硬件一致，并从pytorch代码中删除了对cuda的依赖，这样pytorch的版本升级不用和cuda升级同步，给双方留下的最大的灵活性。
-3.	方便接入第三方硬件
-以往的第三方硬件接入过程中，各个厂商分别实现接入代码，导致代码臃肿和功能重复，现在我们提供了硬件抽象层的基类实现，一些通用的功能已经实现完毕，并预留出了和硬件强相关的接口，各个厂商只需要按照要求实现这些接口即可实现硬件接入pytorch。由于通用了代码，当框架代码升级时第三方硬件也能自动享受框架升级带来的性能提升。
 
-
+1. 直接指定底层硬件
+   实际在使用pytorch的时候，经常涉及到在代码中直接指定底层硬件的情况，例如torch.tensor([3,4]).cuda()，假如在切换到第三方硬件后，pytorch的用户还需要对代码做不通程度的修改，而且由于缺乏硬件抽象，对于第三方的接入使用没有强制性的规定，导致用户代码在切换不同的底层硬件时所做的的修改不完全一样，给代码的通用性带来了挑战。
+2. pytorch和cuda的强依赖
+   pytorch源码中直接涉及到调用cuda的接口，这导致了新的cuda版本发布后，需要等pytorch官方适配，pytorch此外代码中充斥了对cuda头文件的引用，需要通过设置对应的环境变量加以屏蔽，不便于用户理解。
+3. 第三方硬件接入困难
+   目前pytorch提供了privateuse1的DispatechKey，为开发者提供了一种扩展硬件的方式，然后在厂商的实际使用中还是存在问题，例如1.无法同时接入两个不同的后端，2.代码的侵入性强，需要在Pytorch框架层面修改核心组件例如（storage模块，device manange模块），这导致与官方代码的耦合度高，而且无法跟随Pytorch的版本自动升级。
+   我们提出的cuda代码抽象分离方案就是在看到以上问题的基础上提出的，主要具有以下的优点：
+4. 对使用者屏蔽底层硬件实现
+   我们自定义了一套对底层的硬件抽象层，规定了在接入第三方硬件时应该实现的接口和调用规则，在用户使用层面，用户不用直接使用cuda这样的关键字，我们自定义了一套通用的关键字（cuda对应pu1，nccl对应pccl），底层硬件改变后对用户是无感的，用户不用频繁修改代码，真正做到一套代码全平台运行。
+5. 解除pytorch和cuda代码的强依赖
+   我们将cuda设备视为一个和第三方硬件一样的可接入的硬件，对cuda设备的接入方式和所有第三方硬件一致，并从pytorch代码中删除了对cuda的依赖，这样pytorch的版本升级不用和cuda升级同步，给双方留下的最大的灵活性。
+6. 方便接入第三方硬件
+   以往的第三方硬件接入过程中，各个厂商分别实现接入代码，导致代码臃肿和功能重复，现在我们提供了硬件抽象层的基类实现，一些通用的功能已经实现完毕，并预留出了和硬件强相关的接口，各个厂商只需要按照要求实现这些接口即可实现硬件接入pytorch。由于通用了代码，当框架代码升级时第三方硬件也能自动享受框架升级带来的性能提升。
 
 ## **Drawbacks **
+
 Are there any reasons why we should not do this? Here we aim to evaluate risk and check ourselves.
 
 Please consider:
+
 * is it a breaking change?
 * Impact on UX
 * implementation cost, both in terms of code size and complexity
 * integration of this feature with other existing and planned features
 
-
 ## **Alternatives**   洪泓
+
 What other designs have been considered? What is the impact of not doing this?
-in-tree 
-out-of-tree (cuda key, pu1 key)
+
+代码有以下两种放置方案：
+
+1. in-tree
+
+在Pytorch代码下新建目录pytorch/third_device/torch_cuda放入分离后代码，编译过程融       入Pytorch编译中，编译前通过patch形式对Pytorch原生代码进行修改，可以无缝集成到 PyTorch 生态系统中，和PyTorch进行同步开发和版本更新，安全性和稳定性更高，兼容性好，不需要再进行额外的代码适配和测试。
+
+2. out-of-tree
+
+不将代码直接集成到主代码库中，新建仓库对代码独立进行编译和维护，使用时以插件形式接入Pytorch，不对Pytorch原生代码进行侵入式修改，可以提高代码灵活性并降低代码维护成本，开发者可以在不影响主项目的情况下，自由地进行代码改进、修复漏洞和添加新功能，实现快速迭代和测试。
 
 ## **Prior Art**（1人） 崔巍
+
 Discuss prior art (both good and bad) in relation to this proposal:
+
 * Does this feature exist in other libraries? What experience has their community had?
 * What lessons can be learned from other implementations of this feature?
 * Published papers or great posts that discuss this
 
-
 ## **How we teach this**
+
 * What names and terminology work best for these concepts and why? How is this idea best presented?
 * Would the acceptance of this proposal mean the PyTorch documentation must be re-organized or altered?
 * How should this feature be taught to existing PyTorch users?
 
-
 ## **Unresolved questions**
+
 * What parts of the design do you expect to resolve through the RFC process before this gets merged?
 * What parts of the design do you expect to resolve through the implementation of this feature before stabilization?
 * What related issues do you consider out of scope for this RFC that could be addressed in the future independently of the solution that comes out of this RFC?
 
-
 ## Resolution
+
 We decided to do it. X% of the engineering team actively approved of this change.
 
 ### Level of Support
+
 Choose one of the following:
+
 * 1: Overwhelming positive feedback.
 * 2: Positive feedback.
 * 3: Majority Acceptance, with conflicting Feedback.
@@ -398,18 +409,18 @@ Choose one of the following:
 * 6: RFC Rejected.
 * 7: RFC Rejected, with Conflicting Feedback.
 
-
 #### Additional Context
+
 Some people were in favor of it, but some people didn’t want it for project X.
 
-
 ### Next Steps（1人）侯丽亚
+
 Will implement it. 
 
-
 #### Tracking issue
+
 <github issue URL>
 
-
 #### Exceptions
+
 Not implementing on project X now. Will revisit the decision in 1 year.
